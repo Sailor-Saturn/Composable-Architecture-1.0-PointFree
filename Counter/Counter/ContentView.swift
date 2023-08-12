@@ -1,9 +1,3 @@
-//
-//  ContentView.swift
-//  Counter
-//
-//  Created by Vera Dias on 09/08/2023.
-//
 import ComposableArchitecture
 import SwiftUI
 
@@ -11,32 +5,71 @@ struct CounterFeature: Reducer {
     struct State: Equatable {
         var count = 0
         var fact: String?
-        var isTimerOn = false
+        var isTimerOn: Bool = false
+        var isLoading: Bool = false
+        
     }
     
     enum Action {
         case decrementButtonTapped
         case incrementButtonTapped
         case getFactButtonTapped
+        case factResponse(String)
         case toggleTimerButtonTapped
+        case timerTicked
     }
     
+    private enum CancelID {
+        case timer
+    }
+    
+    @Dependency(\.continuousClock) var clock
     var body: some ReducerOf<Self> {// Can deduce that is Reducer <State, Action> using only self
         Reduce { state, action in
             switch action {
             case .decrementButtonTapped:
                 state.count -= 1
+                state.fact = nil
                 return .none
+
             case .incrementButtonTapped:
                 state.count += 1
+                state.fact = nil
                 return .none
+
             case .getFactButtonTapped:
-                // TODO: Perform Request
-                return .none
+                state.fact = nil
+                state.isLoading = true
+                return .run { [count = state.count] send in
+                    try await Task.sleep(for: .seconds(1))
+                    let (data, _ ) = try await URLSession.shared.data(from: URL(
+                        string: "http://www.numbersapi.com/\(count)"
+                      )!
+                    )
+                    let fact = String(decoding: data, as: UTF8.self)
+                    await send(.factResponse(fact))
+                }
+
             case .toggleTimerButtonTapped:
                 state.isTimerOn.toggle()
+                if state.isTimerOn {
+                    return .run { send in
+                        for await _ in self.clock.timer(interval: .seconds(1)) {
+                                      await send(.timerTicked)
+                        }
+                    }
+                    .cancellable(id: CancelID.timer)
+                } else {
+                    return .cancel(id: CancelID.timer)
+                }
                 return .none
-                // TODO: Start Timer
+            case .timerTicked:
+                state.count += 1
+                return .none
+            case .factResponse(let fact):
+                state.fact = fact
+                state.isLoading = false
+                return .none
             }
         }
     }
@@ -50,7 +83,7 @@ struct ContentView: View {
     // since it absorbs too much and will probaly cause
     // performance issues
     
- 
+    
     var body: some View {
         // We shouldn't always use the whole store for each component
         // But for now we will use this: observe: {$0}
@@ -70,9 +103,19 @@ struct ContentView: View {
                     }
                 }
                 Section {
-                    Text("Get Fact")
+                    Button {
+                        viewStore.send(.getFactButtonTapped)
+                    } label: {
+                        HStack {
+                            Text("Get Fact")
+                            if viewStore.isLoading {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
+                    }
                     if let fact = viewStore.fact {
-                        Text("Some Fact")
+                        Text(fact)
                     }
                 }
                 Section {

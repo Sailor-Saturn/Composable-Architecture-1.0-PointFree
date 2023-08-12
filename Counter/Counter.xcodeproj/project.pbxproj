@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		0B73A4C72A8442E70038DCD4 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B73A4C62A8442E70038DCD4 /* CounterApp.swift */; };
 		0B73A4C92A8442E70038DCD4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B73A4C82A8442E70038DCD4 /* ContentView.swift */; };
-		0B73A4CB2A8442E80038DCD4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B73A4CA2A8442E80038DCD4 /* Assets.xcassets */; };
-		0B73A4CE2A8442E80038DCD4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B73A4CD2A8442E80038DCD4 /* Preview Assets.xcassets */; };
 		0B73A4D82A8442E80038DCD4 /* CounterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B73A4D72A8442E80038DCD4 /* CounterTests.swift */; };
 		0B73A4E22A8442E80038DCD4 /* CounterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B73A4E12A8442E80038DCD4 /* CounterUITests.swift */; };
 		0B73A4E42A8442E80038DCD4 /* CounterUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B73A4E32A8442E80038DCD4 /* CounterUITestsLaunchTests.swift */; };
@@ -45,6 +43,7 @@
 		0B73A4DD2A8442E80038DCD4 /* CounterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B73A4E12A8442E80038DCD4 /* CounterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUITests.swift; sourceTree = "<group>"; };
 		0B73A4E32A8442E80038DCD4 /* CounterUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		0B73A4F32A883CE40038DCD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +95,7 @@
 		0B73A4C52A8442E70038DCD4 /* Counter */ = {
 			isa = PBXGroup;
 			children = (
+				0B73A4F32A883CE40038DCD4 /* Info.plist */,
 				0B73A4C62A8442E70038DCD4 /* CounterApp.swift */,
 				0B73A4C82A8442E70038DCD4 /* ContentView.swift */,
 				0B73A4CA2A8442E80038DCD4 /* Assets.xcassets */,
@@ -138,7 +138,6 @@
 			buildPhases = (
 				0B73A4BF2A8442E70038DCD4 /* Sources */,
 				0B73A4C02A8442E70038DCD4 /* Frameworks */,
-				0B73A4C12A8442E70038DCD4 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -235,15 +234,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0B73A4C12A8442E70038DCD4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0B73A4CE2A8442E80038DCD4 /* Preview Assets.xcassets in Resources */,
-				0B73A4CB2A8442E80038DCD4 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0B73A4D12A8442E80038DCD4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -428,6 +418,7 @@
 				DEVELOPMENT_TEAM = 34UZ636LAD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Counter/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -457,6 +448,7 @@
 				DEVELOPMENT_TEAM = 34UZ636LAD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Counter/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
