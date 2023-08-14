@@ -1,6 +1,28 @@
 import ComposableArchitecture
 import SwiftUI
 
+struct NumberFactClient {
+    var fetch: @Sendable (Int) async throws -> String
+}
+
+extension NumberFactClient: DependencyKey {
+    
+    static let liveValue: NumberFactClient = Self { number in
+        let (data, _ ) = try await URLSession.shared.data(from: URL(
+            string: "http://www.numbersapi.com/\(number)"
+          )!
+        )
+        return String(decoding: data, as: UTF8.self)
+    }
+}
+
+extension DependencyValues {
+    var numberFact: NumberFactClient {
+        get { self[NumberFactClient.self]}
+        set { self[NumberFactClient.self] = newValue}
+    }
+}
+
 struct CounterFeature: Reducer {
     struct State: Equatable {
         var count = 0
@@ -10,7 +32,7 @@ struct CounterFeature: Reducer {
         
     }
     
-    enum Action {
+    enum Action: Equatable{ // Need equatable to test the store.receive
         case decrementButtonTapped
         case incrementButtonTapped
         case getFactButtonTapped
@@ -24,6 +46,8 @@ struct CounterFeature: Reducer {
     }
     
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.numberFact) var numberFactClient
+
     var body: some ReducerOf<Self> {// Can deduce that is Reducer <State, Action> using only self
         Reduce { state, action in
             switch action {
@@ -41,13 +65,8 @@ struct CounterFeature: Reducer {
                 state.fact = nil
                 state.isLoading = true
                 return .run { [count = state.count] send in
-                    try await Task.sleep(for: .seconds(1))
-                    let (data, _ ) = try await URLSession.shared.data(from: URL(
-                        string: "http://www.numbersapi.com/\(count)"
-                      )!
-                    )
-                    let fact = String(decoding: data, as: UTF8.self)
-                    await send(.factResponse(fact))
+                    
+                    try await send(.factResponse(self.numberFactClient.fetch(count)))
                 }
 
             case .toggleTimerButtonTapped:
@@ -55,14 +74,13 @@ struct CounterFeature: Reducer {
                 if state.isTimerOn {
                     return .run { send in
                         for await _ in self.clock.timer(interval: .seconds(1)) {
-                                      await send(.timerTicked)
+                            await send(.timerTicked)
                         }
                     }
                     .cancellable(id: CancelID.timer)
                 } else {
                     return .cancel(id: CancelID.timer)
                 }
-                return .none
             case .timerTicked:
                 state.count += 1
                 return .none
